@@ -4,9 +4,12 @@ import Footer from "../Pages/Footer";
 
 const MainLayout = () => {
   return (
-    <div>
-      <Navbar></Navbar>
-      <Outlet></Outlet>
+    <div className="min-h-screen bg-base-200 text-base-content">
+      <Navbar />
+
+      <main>
+        <Outlet />
+      </main>
       <Footer></Footer>
     </div>
   );
