@@ -14,7 +14,13 @@ const NAV_ITEMS = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Skills", to: "/skills" },
-  { label: "Projects", to: "/projects" },
+
+  {
+    label: "Projects",
+    to: "/projects",
+  },
+
+  // { label: "Projects", to: "/projects" },
   { label: "Services", to: "/services" },
   { label: "Resume", to: "/resume" },
   { label: "Contact", to: "/contact" },
