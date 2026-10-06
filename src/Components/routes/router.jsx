@@ -9,6 +9,7 @@ import Projects from "../Projects/Projects";
 import ProjectDetails from "../Projects/ProjectDetails";
 import Services from "../Services/Services";
 import Contact from "../Contact/Contact";
+import SkillsDetails from "../Skills/SkillsDetails";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,11 @@ const router = createBrowserRouter([
       },
       {
         path: "skills",
-        element: <Skills></Skills>,
+        element: <Skills />,
+      },
+      {
+        path: "skills/:id",
+        element: <SkillsDetails />,
       },
       {
         path: "about",
