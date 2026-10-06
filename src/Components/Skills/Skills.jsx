@@ -7,23 +7,29 @@ import {
   FiGitBranch,
   FiGlobe,
   FiLayers,
+  FiLock,
   FiServer,
   FiSettings,
   FiTerminal,
   FiTool,
+  FiZap,
 } from "react-icons/fi";
+import { Link } from "react-router-dom";
+
+/* ============================================================
+   SKILL DATA
+============================================================ */
 
 const SKILL_CATEGORIES = [
   {
     id: "frontend",
     title: "Frontend Development",
     description:
-      "Building responsive, accessible, and interactive user interfaces with modern frontend technologies.",
+      "Building responsive, accessible, and interactive interfaces with modern React architecture.",
     icon: FiCode,
-    accent: "primary",
     skills: [
       {
-        name: "React",
+        name: "React.js",
         level: 92,
         description: "Component-based UI development",
       },
@@ -38,34 +44,39 @@ const SKILL_CATEGORIES = [
         description: "Responsive utility-first styling",
       },
       {
-        name: "HTML5",
-        level: 95,
-        description: "Semantic and accessible markup",
+        name: "DaisyUI",
+        level: 90,
+        description: "Semantic component styling",
       },
       {
-        name: "CSS3",
-        level: 90,
-        description: "Modern layouts and animations",
+        name: "React Router",
+        level: 88,
+        description: "Client-side routing",
+      },
+      {
+        name: "Framer Motion",
+        level: 84,
+        description: "Modern UI animation",
       },
     ],
   },
+
   {
     id: "backend",
     title: "Backend Development",
     description:
-      "Creating scalable APIs, server-side applications, and reliable backend architecture.",
+      "Creating reliable APIs and server-side applications with clean architecture and maintainable code.",
     icon: FiServer,
-    accent: "secondary",
     skills: [
       {
         name: "Node.js",
         level: 88,
-        description: "Server-side JavaScript development",
+        description: "Server-side JavaScript",
       },
       {
         name: "Express.js",
         level: 90,
-        description: "REST API and backend development",
+        description: "REST API development",
       },
       {
         name: "REST API",
@@ -73,19 +84,29 @@ const SKILL_CATEGORIES = [
         description: "Structured API architecture",
       },
       {
-        name: "Authentication",
+        name: "MVC Architecture",
+        level: 84,
+        description: "Maintainable application structure",
+      },
+      {
+        name: "JWT",
         level: 82,
-        description: "Secure application authentication",
+        description: "Token-based authentication",
+      },
+      {
+        name: "CORS",
+        level: 86,
+        description: "Secure cross-origin requests",
       },
     ],
   },
+
   {
     id: "database",
     title: "Database & Data",
     description:
-      "Designing and working with application data using flexible and scalable database solutions.",
+      "Designing structured data solutions with MongoDB for reliable and scalable applications.",
     icon: FiDatabase,
-    accent: "accent",
     skills: [
       {
         name: "MongoDB",
@@ -100,11 +121,55 @@ const SKILL_CATEGORIES = [
       {
         name: "Data Modeling",
         level: 82,
-        description: "Structured application data",
+        description: "Application data architecture",
+      },
+      {
+        name: "CRUD Operations",
+        level: 92,
+        description: "Complete data workflows",
+      },
+      {
+        name: "Query Design",
+        level: 82,
+        description: "Efficient data retrieval",
+      },
+    ],
+  },
+
+  {
+    id: "authentication",
+    title: "Authentication & Security",
+    description:
+      "Implementing secure authentication and protected application flows for modern web applications.",
+    icon: FiLock,
+    skills: [
+      {
+        name: "Firebase Authentication",
+        level: 86,
+        description: "User authentication",
+      },
+      {
+        name: "JWT Authentication",
+        level: 82,
+        description: "Secure token-based access",
+      },
+      {
+        name: "Protected Routes",
+        level: 88,
+        description: "Authenticated application pages",
+      },
+      {
+        name: "Authorization",
+        level: 80,
+        description: "User access control",
       },
     ],
   },
 ];
+
+/* ============================================================
+   DEVELOPMENT TOOLS
+============================================================ */
 
 const TOOLS = [
   {
@@ -123,35 +188,92 @@ const TOOLS = [
     description: "Authentication & services",
   },
   {
-    name: "Vite",
-    icon: FiTool,
-    description: "Modern build tooling",
-  },
-  {
-    name: "React Query",
-    icon: FiLayers,
-    description: "Server state management",
-  },
-  {
     name: "Axios",
     icon: FiTerminal,
     description: "HTTP client",
   },
+  {
+    name: "TanStack Query",
+    icon: FiLayers,
+    description: "Server-state management",
+  },
+  {
+    name: "React Hook Form",
+    icon: FiCheckCircle,
+    description: "Form management",
+  },
+  {
+    name: "React Hot Toast",
+    icon: FiZap,
+    description: "User feedback",
+  },
+  {
+    name: "Lottie React",
+    icon: FiTool,
+    description: "Interactive animations",
+  },
 ];
 
+/* ============================================================
+   CORE STACK
+============================================================ */
+
 const CORE_SKILLS = [
-  "React",
+  "React.js",
   "JavaScript",
   "Node.js",
   "Express.js",
   "MongoDB",
   "REST API",
   "Tailwind CSS",
+  "DaisyUI",
+  "Firebase",
+  "JWT",
   "Git",
+  "GitHub",
 ];
+
+/* ============================================================
+   WORKFLOW
+============================================================ */
+
+const WORKFLOW = [
+  {
+    number: "01",
+    title: "Architecture",
+    description:
+      "Plan components, application structure, data flow, API boundaries, and database relationships before implementation.",
+  },
+  {
+    number: "02",
+    title: "Development",
+    description:
+      "Build reusable frontend components and reliable backend services using clean and maintainable code.",
+  },
+  {
+    number: "03",
+    title: "Integration",
+    description:
+      "Connect APIs, authentication, database operations, forms, server state, and third-party services.",
+  },
+  {
+    number: "04",
+    title: "Optimization",
+    description:
+      "Improve responsiveness, accessibility, loading states, error handling, performance, and overall user experience.",
+  },
+];
+
+/* ============================================================
+   COMPONENT
+============================================================ */
 
 const Skills = () => {
   const shouldReduceMotion = useReducedMotion();
+
+  /* ----------------------------------------------------------
+     Shared reveal animation
+  ---------------------------------------------------------- */
 
   const fadeUp = (delay = 0) => ({
     initial: shouldReduceMotion
@@ -160,14 +282,17 @@ const Skills = () => {
           opacity: 0,
           y: 28,
         },
+
     whileInView: {
       opacity: 1,
       y: 0,
     },
+
     viewport: {
       once: true,
       amount: 0.15,
     },
+
     transition: shouldReduceMotion
       ? {
           duration: 0,
@@ -180,27 +305,20 @@ const Skills = () => {
   });
 
   return (
-    <section
+    <main
       id="skills"
-      aria-labelledby="skills-title"
-      className="
-        relative
-        isolate
-        overflow-hidden
-        bg-base-100
-        py-20
-        sm:py-24
-        lg:py-32
-      "
+      className="relative isolate overflow-hidden bg-base-100 text-base-content"
     >
-      {/* =========================================================
+      {/* ======================================================
           BACKGROUND
-      ========================================================== */}
+      ======================================================= */}
+
       <div
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
         aria-hidden="true"
       >
         {/* Primary Glow */}
+
         <motion.div
           animate={
             shouldReduceMotion
@@ -240,6 +358,7 @@ const Skills = () => {
         />
 
         {/* Secondary Glow */}
+
         <motion.div
           animate={
             shouldReduceMotion
@@ -273,6 +392,7 @@ const Skills = () => {
         />
 
         {/* Accent Glow */}
+
         <div
           className="
             absolute
@@ -289,6 +409,7 @@ const Skills = () => {
         />
 
         {/* Grid */}
+
         <div
           className="absolute inset-0 opacity-[0.022]"
           style={{
@@ -299,27 +420,32 @@ const Skills = () => {
         />
       </div>
 
-      {/* =========================================================
+      {/* ======================================================
           MAIN CONTAINER
-      ========================================================== */}
+      ======================================================= */}
+
       <div
         className="
           mx-auto
           w-full
           max-w-7xl
           px-4
+          py-20
           sm:px-6
+          sm:py-24
           lg:px-8
+          lg:py-32
         "
       >
-        {/* =======================================================
-            SECTION HEADER
-        ======================================================== */}
+        {/* ====================================================
+            HEADER
+        ===================================================== */}
+
         <div className="mx-auto max-w-3xl text-center">
           <motion.div
             {...fadeUp(0)}
             className="
-              mb-4
+              mb-5
               inline-flex
               items-center
               gap-2
@@ -330,12 +456,13 @@ const Skills = () => {
               px-3.5
               py-2
               font-mono
-              text-xs
+              text-[10px]
               font-semibold
               uppercase
               tracking-[0.18em]
               text-primary
               backdrop-blur-md
+              sm:text-xs
             "
           >
             <FiTerminal />
@@ -343,24 +470,24 @@ const Skills = () => {
             <span>Technical Skills</span>
           </motion.div>
 
-          <motion.h2
-            id="skills-title"
+          <motion.h1
             {...fadeUp(0.1)}
             className="
               text-balance
-              text-3xl
+              text-4xl
               font-black
-              leading-tight
-              tracking-[-0.035em]
+              leading-[1.05]
+              tracking-[-0.045em]
               text-base-content
-              sm:text-4xl
-              md:text-5xl
-              lg:text-6xl
+              sm:text-5xl
+              md:text-6xl
+              lg:text-7xl
             "
           >
-            Tools I use to{" "}
+            The stack behind
             <span
               className="
+                block
                 bg-gradient-to-r
                 from-primary
                 via-secondary
@@ -369,40 +496,41 @@ const Skills = () => {
                 text-transparent
               "
             >
-              build products.
+              the products I build.
             </span>
-          </motion.h2>
+          </motion.h1>
 
           <motion.p
             {...fadeUp(0.2)}
             className="
               mx-auto
-              mt-5
+              mt-6
               max-w-2xl
-              text-base
+              text-sm
               leading-7
               text-base-content/60
-              sm:mt-6
-              sm:text-lg
+              sm:text-base
               sm:leading-8
+              lg:text-lg
             "
           >
-            A practical technology stack focused on building modern, scalable,
-            responsive, and maintainable web applications from frontend to
-            backend.
+            A practical full-stack technology stack focused on creating
+            responsive interfaces, reliable APIs, secure authentication,
+            structured data, and maintainable software.
           </motion.p>
         </div>
 
-        {/* =======================================================
-            CORE SKILLS STRIP
-        ======================================================== */}
+        {/* ====================================================
+            CORE SKILLS
+        ===================================================== */}
+
         <motion.div
           {...fadeUp(0.25)}
           className="
             mx-auto
             mt-10
             flex
-            max-w-4xl
+            max-w-5xl
             flex-wrap
             justify-center
             gap-2
@@ -434,7 +562,7 @@ const Skills = () => {
                     }
                   : {
                       duration: 0.4,
-                      delay: index * 0.05,
+                      delay: index * 0.04,
                     }
               }
               className="
@@ -445,7 +573,7 @@ const Skills = () => {
                 px-3.5
                 py-2
                 font-mono
-                text-xs
+                text-[11px]
                 text-base-content/60
                 backdrop-blur-sm
                 transition-colors
@@ -453,6 +581,7 @@ const Skills = () => {
                 hover:border-primary/40
                 hover:text-primary
                 sm:px-4
+                sm:text-xs
               "
             >
               {skill}
@@ -460,17 +589,61 @@ const Skills = () => {
           ))}
         </motion.div>
 
-        {/* =======================================================
-            SKILL CATEGORY CARDS
-        ======================================================== */}
-        <div className="mt-14 grid gap-5 lg:mt-20 lg:grid-cols-3">
-          {SKILL_CATEGORIES.map((category, categoryIndex) => {
+        {/* ====================================================
+            SKILL CATEGORIES
+        ===================================================== */}
+
+        <motion.div
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: shouldReduceMotion ? 0 : 0.08,
+              },
+            },
+          }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+            amount: 0.05,
+          }}
+          className="
+            mt-14
+            grid
+            gap-5
+            sm:mt-16
+            md:grid-cols-2
+            xl:grid-cols-4
+          "
+        >
+          {SKILL_CATEGORIES.map((category) => {
             const Icon = category.icon;
 
             return (
               <motion.article
                 key={category.id}
-                {...fadeUp(0.1 + categoryIndex * 0.1)}
+                variants={{
+                  hidden: shouldReduceMotion
+                    ? {}
+                    : {
+                        opacity: 0,
+                        y: 30,
+                      },
+
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: shouldReduceMotion
+                      ? {
+                          duration: 0,
+                        }
+                      : {
+                          duration: 0.6,
+                          ease: [0.22, 1, 0.36, 1],
+                        },
+                  },
+                }}
                 whileHover={
                   shouldReduceMotion
                     ? undefined
@@ -482,7 +655,7 @@ const Skills = () => {
                   group
                   relative
                   overflow-hidden
-                  rounded-[1.5rem]
+                  rounded-3xl
                   border
                   border-base-300
                   bg-base-100/70
@@ -495,10 +668,10 @@ const Skills = () => {
                   hover:shadow-xl
                   hover:shadow-primary/5
                   sm:p-6
-                  lg:rounded-[2rem]
                 "
               >
-                {/* Card Accent */}
+                {/* Top Accent */}
+
                 <div
                   className="
                     absolute
@@ -518,7 +691,8 @@ const Skills = () => {
                   aria-hidden="true"
                 />
 
-                {/* Header */}
+                {/* Category Header */}
+
                 <div className="flex items-start justify-between gap-4">
                   <div
                     className="
@@ -528,7 +702,7 @@ const Skills = () => {
                       shrink-0
                       items-center
                       justify-center
-                      rounded-xl
+                      rounded-2xl
                       border
                       border-base-300
                       bg-base-200/60
@@ -560,17 +734,18 @@ const Skills = () => {
                   </span>
                 </div>
 
-                <h3
+                <h2
                   className="
                     mt-5
-                    text-xl
+                    text-lg
                     font-bold
                     tracking-tight
                     text-base-content
+                    sm:text-xl
                   "
                 >
                   {category.title}
-                </h3>
+                </h2>
 
                 <p
                   className="
@@ -583,12 +758,13 @@ const Skills = () => {
                   {category.description}
                 </p>
 
-                {/* Skill List */}
+                {/* Skill Progress */}
+
                 <div className="mt-7 space-y-5">
                   {category.skills.map((skill, skillIndex) => (
                     <div key={skill.name}>
                       <div className="mb-2 flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex min-w-0 items-center gap-2">
                           <FiCheckCircle
                             className="
                               shrink-0
@@ -599,9 +775,11 @@ const Skills = () => {
 
                           <span
                             className="
-                              text-sm
+                              truncate
+                              text-xs
                               font-semibold
                               text-base-content/80
+                              sm:text-sm
                             "
                           >
                             {skill.name}
@@ -610,6 +788,7 @@ const Skills = () => {
 
                         <span
                           className="
+                            shrink-0
                             font-mono
                             text-[10px]
                             text-base-content/35
@@ -619,7 +798,6 @@ const Skills = () => {
                         </span>
                       </div>
 
-                      {/* Progress */}
                       <div
                         className="
                           h-1.5
@@ -630,8 +808,8 @@ const Skills = () => {
                         role="progressbar"
                         aria-label={`${skill.name} proficiency`}
                         aria-valuenow={skill.level}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
+                        aria-valuemin={0}
+                        aria-valuemax={100}
                       >
                         <motion.div
                           initial={
@@ -657,10 +835,7 @@ const Skills = () => {
                                 }
                               : {
                                   duration: 1,
-                                  delay:
-                                    0.35 +
-                                    categoryIndex * 0.08 +
-                                    skillIndex * 0.06,
+                                  delay: 0.25 + skillIndex * 0.06,
                                   ease: [0.22, 1, 0.36, 1],
                                 }
                           }
@@ -675,7 +850,14 @@ const Skills = () => {
                         />
                       </div>
 
-                      <p className="mt-1.5 text-[10px] text-base-content/35">
+                      <p
+                        className="
+                          mt-1.5
+                          text-[10px]
+                          leading-4
+                          text-base-content/35
+                        "
+                      >
                         {skill.description}
                       </p>
                     </div>
@@ -684,23 +866,24 @@ const Skills = () => {
               </motion.article>
             );
           })}
-        </div>
+        </motion.div>
 
-        {/* =======================================================
-            DEVELOPMENT WORKFLOW
-        ======================================================== */}
-        <div className="mt-16 lg:mt-24">
+        {/* ====================================================
+            DEVELOPMENT TOOLKIT
+        ===================================================== */}
+
+        <section className="mt-20 sm:mt-24 lg:mt-28">
           <motion.div
             {...fadeUp(0)}
             className="
               mb-8
               flex
               flex-col
-              gap-3
+              gap-4
               sm:mb-10
-              sm:flex-row
-              sm:items-end
-              sm:justify-between
+              lg:flex-row
+              lg:items-end
+              lg:justify-between
             "
           >
             <div>
@@ -710,18 +893,19 @@ const Skills = () => {
                 <span
                   className="
                     font-mono
-                    text-xs
+                    text-[10px]
                     font-semibold
                     uppercase
                     tracking-[0.18em]
                     text-secondary
+                    sm:text-xs
                   "
                 >
                   Development Toolkit
                 </span>
               </div>
 
-              <h3
+              <h2
                 className="
                   text-2xl
                   font-bold
@@ -731,7 +915,7 @@ const Skills = () => {
                 "
               >
                 Tools behind the workflow.
-              </h3>
+              </h2>
             </div>
 
             <p
@@ -742,44 +926,60 @@ const Skills = () => {
                 text-base-content/50
               "
             >
-              Supporting tools that help keep development organized, efficient,
-              and production-ready.
+              Supporting tools that help keep development organized,
+              collaborative, efficient, and production-ready.
             </p>
           </motion.div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {TOOLS.map((tool, index) => {
+          <motion.div
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: shouldReduceMotion ? 0 : 0.06,
+                },
+              },
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.1,
+            }}
+            className="
+              grid
+              gap-3
+              sm:grid-cols-2
+              lg:grid-cols-4
+            "
+          >
+            {TOOLS.map((tool) => {
               const Icon = tool.icon;
 
               return (
                 <motion.div
                   key={tool.name}
-                  initial={
-                    shouldReduceMotion
-                      ? false
+                  variants={{
+                    hidden: shouldReduceMotion
+                      ? {}
                       : {
                           opacity: 0,
                           y: 20,
-                        }
-                  }
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
+                        },
+
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: shouldReduceMotion
+                        ? {
+                            duration: 0,
+                          }
+                        : {
+                            duration: 0.5,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                    },
                   }}
-                  viewport={{
-                    once: true,
-                    amount: 0.15,
-                  }}
-                  transition={
-                    shouldReduceMotion
-                      ? {
-                          duration: 0,
-                        }
-                      : {
-                          duration: 0.5,
-                          delay: index * 0.07,
-                        }
-                  }
                   whileHover={
                     shouldReduceMotion
                       ? undefined
@@ -790,8 +990,9 @@ const Skills = () => {
                   className="
                     group
                     flex
+                    min-w-0
                     items-center
-                    gap-4
+                    gap-3
                     rounded-2xl
                     border
                     border-base-300
@@ -802,14 +1003,15 @@ const Skills = () => {
                     duration-300
                     hover:border-primary/30
                     hover:bg-base-200/30
+                    sm:gap-4
                     sm:p-5
                   "
                 >
                   <div
                     className="
                       flex
-                      h-11
-                      w-11
+                      h-10
+                      w-10
                       shrink-0
                       items-center
                       justify-center
@@ -820,13 +1022,15 @@ const Skills = () => {
                       duration-300
                       group-hover:bg-primary/10
                       group-hover:text-primary
+                      sm:h-11
+                      sm:w-11
                     "
                   >
                     <Icon className="text-lg" />
                   </div>
 
                   <div className="min-w-0">
-                    <h4
+                    <h3
                       className="
                         truncate
                         text-sm
@@ -835,9 +1039,16 @@ const Skills = () => {
                       "
                     >
                       {tool.name}
-                    </h4>
+                    </h3>
 
-                    <p className="mt-0.5 text-xs text-base-content/40">
+                    <p
+                      className="
+                        mt-0.5
+                        truncate
+                        text-xs
+                        text-base-content/40
+                      "
+                    >
                       {tool.description}
                     </p>
                   </div>
@@ -857,17 +1068,234 @@ const Skills = () => {
                 </motion.div>
               );
             })}
-          </div>
-        </div>
+          </motion.div>
+        </section>
 
-        {/* =======================================================
-            BOTTOM CTA / PHILOSOPHY
-        ======================================================== */}
-        <motion.div
+        {/* ====================================================
+            WORKFLOW
+        ===================================================== */}
+
+        <section className="mt-20 sm:mt-24 lg:mt-28">
+          <div
+            className="
+              grid
+              gap-10
+              lg:grid-cols-[0.75fr_1.25fr]
+              lg:gap-16
+          "
+          >
+            {/* Workflow Intro */}
+
+            <motion.div
+              {...fadeUp(0)}
+              className="lg:sticky lg:top-28 lg:self-start"
+            >
+              <div className="mb-3 flex items-center gap-2">
+                <span className="h-px w-8 bg-accent" />
+
+                <span
+                  className="
+                    font-mono
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.18em]
+                    text-accent
+                    sm:text-xs
+                  "
+                >
+                  Engineering Workflow
+                </span>
+              </div>
+
+              <h2
+                className="
+                  text-3xl
+                  font-black
+                  tracking-[-0.035em]
+                  text-base-content
+                  sm:text-4xl
+                "
+              >
+                More than
+                <span className="block text-base-content/40">
+                  just writing code.
+                </span>
+              </h2>
+
+              <p
+                className="
+                  mt-5
+                  max-w-md
+                  text-sm
+                  leading-7
+                  text-base-content/55
+                  sm:text-base
+                "
+              >
+                I approach development as an engineering process: understand the
+                problem, design the architecture, build the solution, and
+                continuously improve the final product.
+              </p>
+            </motion.div>
+
+            {/* Workflow Steps */}
+
+            <motion.div
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: shouldReduceMotion ? 0 : 0.08,
+                  },
+                },
+              }}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.1,
+              }}
+              className="relative"
+            >
+              {/* Timeline */}
+
+              <div
+                className="
+                  absolute
+                  bottom-6
+                  left-[17px]
+                  top-6
+                  w-px
+                  bg-base-300
+                  sm:left-[23px]
+                "
+                aria-hidden="true"
+              />
+
+              <div className="space-y-4">
+                {WORKFLOW.map((step) => (
+                  <motion.article
+                    key={step.number}
+                    variants={{
+                      hidden: shouldReduceMotion
+                        ? {}
+                        : {
+                            opacity: 0,
+                            x: 20,
+                          },
+
+                      visible: {
+                        opacity: 1,
+                        x: 0,
+                        transition: shouldReduceMotion
+                          ? {
+                              duration: 0,
+                            }
+                          : {
+                              duration: 0.6,
+                              ease: [0.22, 1, 0.36, 1],
+                            },
+                      },
+                    }}
+                    className="
+                      relative
+                      rounded-3xl
+                      border
+                      border-base-300
+                      bg-base-200/30
+                      p-5
+                      pl-12
+                      sm:p-7
+                      sm:pl-16
+                    "
+                  >
+                    {/* Timeline Point */}
+
+                    <div
+                      className="
+                        absolute
+                        left-[11px]
+                        top-7
+                        h-3
+                        w-3
+                        rounded-full
+                        bg-primary
+                        ring-4
+                        ring-base-100
+                        sm:left-[18px]
+                      "
+                      aria-hidden="true"
+                    />
+
+                    <div className="flex items-start justify-between gap-5">
+                      <div>
+                        <span
+                          className="
+                            font-mono
+                            text-[10px]
+                            font-semibold
+                            uppercase
+                            tracking-[0.16em]
+                            text-primary
+                          "
+                        >
+                          Step {step.number}
+                        </span>
+
+                        <h3
+                          className="
+                            mt-2
+                            text-lg
+                            font-bold
+                            text-base-content
+                            sm:text-xl
+                          "
+                        >
+                          {step.title}
+                        </h3>
+                      </div>
+
+                      <span
+                        className="
+                          hidden
+                          font-mono
+                          text-3xl
+                          font-black
+                          text-base-content/5
+                          sm:block
+                        "
+                      >
+                        {step.number}
+                      </span>
+                    </div>
+
+                    <p
+                      className="
+                        mt-3
+                        text-sm
+                        leading-6
+                        text-base-content/50
+                      "
+                    >
+                      {step.description}
+                    </p>
+                  </motion.article>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ====================================================
+            BOTTOM CTA
+        ===================================================== */}
+
+        <motion.section
           {...fadeUp(0.2)}
           className="
             relative
-            mt-14
+            mt-20
             overflow-hidden
             rounded-[1.5rem]
             border
@@ -876,21 +1304,23 @@ const Skills = () => {
             p-6
             text-center
             backdrop-blur-sm
-            sm:mt-16
+            sm:mt-24
             sm:rounded-[2rem]
-            sm:p-9
-            lg:mt-20
+            sm:p-10
+            lg:mt-28
+            lg:p-14
           "
         >
-          {/* Decorative Glow */}
+          {/* Glow */}
+
           <div
             className="
               pointer-events-none
               absolute
               left-1/2
-              top-[-100px]
-              h-[220px]
-              w-[220px]
+              top-[-120px]
+              h-[260px]
+              w-[260px]
               -translate-x-1/2
               rounded-full
               bg-primary/8
@@ -908,7 +1338,7 @@ const Skills = () => {
                 w-12
                 items-center
                 justify-center
-                rounded-xl
+                rounded-2xl
                 border
                 border-primary/20
                 bg-primary/10
@@ -918,91 +1348,94 @@ const Skills = () => {
               <FiLayers className="text-xl" />
             </div>
 
-            <h3
+            <h2
               className="
                 mx-auto
                 mt-5
                 max-w-2xl
-                text-xl
-                font-bold
-                tracking-tight
+                text-2xl
+                font-black
+                tracking-[-0.03em]
                 text-base-content
-                sm:text-2xl
+                sm:text-3xl
+                lg:text-4xl
               "
             >
-              The right technology is only part of the solution.
-            </h3>
+              Technology is the tool.
+              <span className="block text-base-content/40">
+                Problem solving is the skill.
+              </span>
+            </h2>
 
             <p
               className="
                 mx-auto
-                mt-3
+                mt-4
                 max-w-2xl
                 text-sm
-                leading-6
+                leading-7
                 text-base-content/50
                 sm:text-base
-                sm:leading-7
               "
             >
-              I focus on choosing practical technologies, writing maintainable
-              code, and creating solutions that solve the actual problem instead
-              of adding unnecessary complexity.
+              I choose technologies based on the problem, project requirements,
+              maintainability, and user experience — not simply because they are
+              popular.
             </p>
 
-            <motion.a
-              href="#projects"
-              whileHover={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      y: -2,
-                    }
-              }
-              whileTap={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      scale: 0.98,
-                    }
-              }
-              className="
-                group
-                mt-6
-                inline-flex
-                min-h-11
-                items-center
-                gap-2
-                rounded-xl
-                bg-primary
-                px-5
-                text-sm
-                font-semibold
-                text-primary-content
-                shadow-lg
-                shadow-primary/20
-                transition-all
-                duration-200
-                hover:shadow-xl
-                hover:shadow-primary/25
-              "
-            >
-              <span>View My Projects</span>
-
-              <FiArrowUpRight
+            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link
+                to="/projects"
                 className="
-                  text-base
-                  transition-transform
-                  duration-200
-                  group-hover:-translate-y-0.5
-                  group-hover:translate-x-0.5
+                  group
+                  btn
+                  btn-primary
+                  h-12
+                  min-h-12
+                  rounded-xl
+                  border-none
+                  px-6
+                  font-semibold
+                  shadow-lg
+                  shadow-primary/20
                 "
-              />
-            </motion.a>
+              >
+                <span>Explore My Projects</span>
+
+                <FiArrowUpRight
+                  className="
+                    transition-transform
+                    duration-200
+                    group-hover:-translate-y-0.5
+                    group-hover:translate-x-0.5
+                  "
+                />
+              </Link>
+
+              <Link
+                to="/services"
+                className="
+                  btn
+                  h-12
+                  min-h-12
+                  rounded-xl
+                  border
+                  border-base-300
+                  bg-base-100
+                  px-6
+                  font-semibold
+                  text-base-content
+                  hover:border-primary/30
+                  hover:text-primary
+                "
+              >
+                View Services
+              </Link>
+            </div>
           </div>
-        </motion.div>
+        </motion.section>
       </div>
-    </section>
+    </main>
   );
 };
 

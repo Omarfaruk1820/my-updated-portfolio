@@ -7,6 +7,7 @@ import Skills from "../Skills/Skills";
 import About from "../Pages/About";
 import Projects from "../Projects/Projects";
 import ProjectDetails from "../Projects/ProjectDetails";
+import Services from "../Services/Services";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,11 @@ const router = createBrowserRouter([
         path: "projects/:id",
         element: <ProjectDetails />,
       },
+
+      {
+        path:"Services",
+        element:<Services></Services>
+      }
     ],
   },
 ]);
