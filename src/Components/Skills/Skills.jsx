@@ -1,12 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion, useReducedMotion } from "framer-motion";
 import {
+  FiAlertCircle,
   FiArrowUpRight,
   FiCheckCircle,
   FiLayers,
+  FiRefreshCw,
   FiTerminal,
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
+import { getSkills } from "../api/skillsApi";
 import {
   CORE_SKILLS,
   SKILL_CATEGORIES,
@@ -17,6 +21,51 @@ import {
 const Skills = () => {
   const shouldReduceMotion = useReducedMotion();
 
+  const {
+    data: skills = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["skills"],
+    queryFn: getSkills,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 2,
+  });
+
+  /**
+   * Merge static category metadata
+   * with dynamic skills from MongoDB.
+   */
+  const categories = SKILL_CATEGORIES.map((category) => {
+    const categorySkills = skills
+      .filter(
+        (skill) => skill.category === category.id && skill.isActive !== false,
+      )
+      .sort((a, b) => {
+        const orderA = Number(a.order) || 0;
+        const orderB = Number(b.order) || 0;
+
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+
+        return String(a.name || "").localeCompare(String(b.name || ""));
+      });
+
+    return {
+      ...category,
+      skills: categorySkills,
+    };
+  });
+
+  const totalActiveSkills = categories.reduce(
+    (total, category) => total + category.skills.length,
+    0,
+  );
+
   const fadeUp = (delay = 0) => ({
     initial: shouldReduceMotion
       ? false
@@ -24,14 +73,17 @@ const Skills = () => {
           opacity: 0,
           y: 28,
         },
+
     whileInView: {
       opacity: 1,
       y: 0,
     },
+
     viewport: {
       once: true,
       amount: 0.15,
     },
+
     transition: shouldReduceMotion
       ? { duration: 0 }
       : {
@@ -46,7 +98,9 @@ const Skills = () => {
       id="skills"
       className="relative isolate overflow-hidden bg-base-100 text-base-content"
     >
-      {/* Background */}
+      {/* =========================================================
+          BACKGROUND
+      ========================================================== */}
       <div
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
         aria-hidden="true"
@@ -107,7 +161,9 @@ const Skills = () => {
       </div>
 
       <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
-        {/* Header */}
+        {/* =========================================================
+            HEADER
+        ========================================================== */}
         <div className="mx-auto max-w-3xl text-center">
           <motion.div
             {...fadeUp(0)}
@@ -137,7 +193,9 @@ const Skills = () => {
           </motion.p>
         </div>
 
-        {/* Core Skills */}
+        {/* =========================================================
+            CORE SKILLS
+        ========================================================== */}
         <motion.div
           {...fadeUp(0.25)}
           className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-2 sm:mt-12"
@@ -157,7 +215,9 @@ const Skills = () => {
                 opacity: 1,
                 scale: 1,
               }}
-              viewport={{ once: true }}
+              viewport={{
+                once: true,
+              }}
               transition={
                 shouldReduceMotion
                   ? { duration: 0 }
@@ -173,138 +233,263 @@ const Skills = () => {
           ))}
         </motion.div>
 
-        {/* Skill Categories */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.05 }}
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: shouldReduceMotion ? 0 : 0.08,
-              },
-            },
-          }}
-          className="mt-14 grid gap-5 sm:mt-16 md:grid-cols-2 xl:grid-cols-4"
-        >
-          {SKILL_CATEGORIES.map((category) => {
-            const Icon = category.icon;
-
-            return (
-              <motion.article
-                key={category.id}
-                variants={{
-                  hidden: shouldReduceMotion
-                    ? {}
-                    : {
-                        opacity: 0,
-                        y: 30,
-                      },
-                  visible: {
-                    opacity: 1,
-                    y: 0,
-                    transition: shouldReduceMotion
-                      ? { duration: 0 }
-                      : {
-                          duration: 0.6,
-                          ease: [0.22, 1, 0.36, 1],
-                        },
-                  },
-                }}
-                whileHover={shouldReduceMotion ? undefined : { y: -5 }}
-                className="group relative overflow-hidden rounded-3xl border border-base-300 bg-base-100/70 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/5 sm:p-6"
+        {/* =========================================================
+            LOADING STATE
+        ========================================================== */}
+        {isLoading && (
+          <section
+            aria-live="polite"
+            aria-label="Loading skills"
+            className="mt-14 grid gap-5 sm:mt-16 md:grid-cols-2 xl:grid-cols-4"
+          >
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="rounded-3xl border border-base-300 bg-base-100/70 p-5 shadow-sm sm:p-6"
               >
-                <div
-                  className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  aria-hidden="true"
-                />
+                <div className="h-12 w-12 animate-pulse rounded-2xl bg-base-300" />
 
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-base-300 bg-base-200/60 text-primary transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/10">
-                    <Icon className="text-xl" />
-                  </div>
+                <div className="mt-5 h-5 w-3/4 animate-pulse rounded bg-base-300" />
 
-                  <span className="rounded-full border border-base-300 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-base-content/35">
-                    {category.skills.length} Skills
-                  </span>
-                </div>
-
-                <h2 className="mt-5 text-lg font-bold tracking-tight sm:text-xl">
-                  {category.title}
-                </h2>
-
-                <p className="mt-2.5 text-sm leading-6 text-base-content/50">
-                  {category.description}
-                </p>
+                <div className="mt-3 h-10 animate-pulse rounded bg-base-300" />
 
                 <div className="mt-7 space-y-5">
-                  {category.skills.slice(0, 4).map((skill, skillIndex) => (
-                    <div key={skill.name}>
-                      <div className="mb-2 flex items-center justify-between gap-3">
-                        <div className="flex min-w-0 items-center gap-2">
-                          <FiCheckCircle className="shrink-0 text-xs text-primary/70" />
+                  {Array.from({ length: 4 }).map((_, skillIndex) => (
+                    <div key={skillIndex}>
+                      <div className="h-4 animate-pulse rounded bg-base-300" />
 
-                          <span className="truncate text-xs font-semibold text-base-content/80 sm:text-sm">
-                            {skill.name}
-                          </span>
-                        </div>
-
-                        <span className="shrink-0 font-mono text-[10px] text-base-content/35">
-                          {skill.level}%
-                        </span>
-                      </div>
-
-                      <div
-                        className="h-1.5 overflow-hidden rounded-full bg-base-300"
-                        role="progressbar"
-                        aria-label={`${skill.name} proficiency`}
-                        aria-valuenow={skill.level}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                      >
-                        <motion.div
-                          initial={
-                            shouldReduceMotion
-                              ? { width: `${skill.level}%` }
-                              : { width: 0 }
-                          }
-                          whileInView={{
-                            width: `${skill.level}%`,
-                          }}
-                          viewport={{
-                            once: true,
-                            amount: 0.3,
-                          }}
-                          transition={
-                            shouldReduceMotion
-                              ? { duration: 0 }
-                              : {
-                                  duration: 1,
-                                  delay: 0.25 + skillIndex * 0.06,
-                                  ease: [0.22, 1, 0.36, 1],
-                                }
-                          }
-                          className="h-full rounded-full bg-gradient-to-r from-primary via-secondary to-accent"
-                        />
-                      </div>
+                      <div className="mt-2 h-1.5 animate-pulse rounded bg-base-300" />
                     </div>
                   ))}
                 </div>
+              </div>
+            ))}
+          </section>
+        )}
 
-                <Link
-                  to={`/skills/details#${category.id}`}
-                  className="group/link mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+        {/* =========================================================
+            ERROR STATE
+        ========================================================== */}
+        {isError && !isLoading && (
+          <section
+            aria-live="assertive"
+            className="mx-auto mt-14 max-w-xl rounded-3xl border border-error/20 bg-base-200/40 p-8 text-center"
+          >
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-error/10 text-error">
+              <FiAlertCircle className="text-xl" />
+            </div>
+
+            <h2 className="mt-5 text-xl font-bold">Unable to load skills</h2>
+
+            <p className="mt-2 text-sm leading-6 text-base-content/50">
+              {error?.message ||
+                "Something went wrong while loading the technical skills."}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="btn btn-primary mt-6 rounded-xl"
+            >
+              <FiRefreshCw />
+              Try Again
+            </button>
+          </section>
+        )}
+
+        {/* =========================================================
+            EMPTY STATE
+        ========================================================== */}
+        {!isLoading && !isError && totalActiveSkills === 0 && (
+          <section
+            aria-live="polite"
+            className="mx-auto mt-14 max-w-xl rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center"
+          >
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <FiLayers className="text-xl" />
+            </div>
+
+            <h2 className="mt-5 text-xl font-bold">No skills available</h2>
+
+            <p className="mt-2 text-sm leading-6 text-base-content/50">
+              Technical skills are currently unavailable. Please check back
+              again soon.
+            </p>
+          </section>
+        )}
+
+        {/* =========================================================
+            SKILL CATEGORIES
+        ========================================================== */}
+        {!isLoading && !isError && totalActiveSkills > 0 && (
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{
+              once: true,
+              amount: 0.05,
+            }}
+            variants={{
+              hidden: {},
+
+              visible: {
+                transition: {
+                  staggerChildren: shouldReduceMotion ? 0 : 0.08,
+                },
+              },
+            }}
+            className="mt-14 grid gap-5 sm:mt-16 md:grid-cols-2 xl:grid-cols-4"
+          >
+            {categories.map((category) => {
+              const Icon = category.icon;
+
+              return (
+                <motion.article
+                  key={category.id}
+                  variants={{
+                    hidden: shouldReduceMotion
+                      ? {}
+                      : {
+                          opacity: 0,
+                          y: 30,
+                        },
+
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+
+                      transition: shouldReduceMotion
+                        ? { duration: 0 }
+                        : {
+                            duration: 0.6,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                    },
+                  }}
+                  whileHover={
+                    shouldReduceMotion
+                      ? undefined
+                      : {
+                          y: -5,
+                        }
+                  }
+                  className="group relative overflow-hidden rounded-3xl border border-base-300 bg-base-100/70 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-primary/25 hover:shadow-xl hover:shadow-primary/5 sm:p-6"
                 >
-                  Explore category
-                  <FiArrowUpRight className="transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
-                </Link>
-              </motion.article>
-            );
-          })}
-        </motion.div>
+                  {/* Top accent */}
+                  <div
+                    className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    aria-hidden="true"
+                  />
 
-        {/* Toolkit */}
+                  {/* Category Icon + Count */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-base-300 bg-base-200/60 text-primary transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/10">
+                      <Icon className="text-xl" />
+                    </div>
+
+                    <span className="rounded-full border border-base-300 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider text-base-content/35">
+                      {category.skills.length} Skills
+                    </span>
+                  </div>
+
+                  {/* Category Information */}
+                  <h2 className="mt-5 text-lg font-bold tracking-tight sm:text-xl">
+                    {category.title}
+                  </h2>
+
+                  <p className="mt-2.5 text-sm leading-6 text-base-content/50">
+                    {category.description}
+                  </p>
+
+                  {/* Skill Preview */}
+                  {category.skills.length > 0 ? (
+                    <div className="mt-7 space-y-5">
+                      {category.skills.slice(0, 4).map((skill, skillIndex) => {
+                        const level = Math.min(
+                          Math.max(Number(skill.level) || 0, 0),
+                          100,
+                        );
+
+                        return (
+                          <div key={skill._id || skill.name}>
+                            <div className="mb-2 flex items-center justify-between gap-3">
+                              <div className="flex min-w-0 items-center gap-2">
+                                <FiCheckCircle className="shrink-0 text-xs text-primary/70" />
+
+                                <span className="truncate text-xs font-semibold text-base-content/80 sm:text-sm">
+                                  {skill.name}
+                                </span>
+                              </div>
+
+                              <span className="shrink-0 font-mono text-[10px] text-base-content/35">
+                                {level}%
+                              </span>
+                            </div>
+
+                            <div
+                              className="h-1.5 overflow-hidden rounded-full bg-base-300"
+                              role="progressbar"
+                              aria-label={`${skill.name} proficiency`}
+                              aria-valuenow={level}
+                              aria-valuemin={0}
+                              aria-valuemax={100}
+                            >
+                              <motion.div
+                                initial={
+                                  shouldReduceMotion
+                                    ? {
+                                        width: `${level}%`,
+                                      }
+                                    : {
+                                        width: 0,
+                                      }
+                                }
+                                whileInView={{
+                                  width: `${level}%`,
+                                }}
+                                viewport={{
+                                  once: true,
+                                  amount: 0.3,
+                                }}
+                                transition={
+                                  shouldReduceMotion
+                                    ? { duration: 0 }
+                                    : {
+                                        duration: 1,
+                                        delay: 0.25 + skillIndex * 0.06,
+                                        ease: [0.22, 1, 0.36, 1],
+                                      }
+                                }
+                                className="h-full rounded-full bg-gradient-to-r from-primary via-secondary to-accent"
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="mt-7 rounded-xl bg-base-200/50 p-4 text-xs text-base-content/45">
+                      No active skills are currently available in this category.
+                    </p>
+                  )}
+
+                  {/* Correct Dynamic Route */}
+                  <Link
+                    to={`/skills/${category.id}`}
+                    className="group/link mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                  >
+                    Explore category
+                    <FiArrowUpRight className="transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+                  </Link>
+                </motion.article>
+              );
+            })}
+          </motion.div>
+        )}
+
+        {/* =========================================================
+            TOOLKIT
+        ========================================================== */}
         <section className="mt-20 sm:mt-24 lg:mt-28">
           <motion.div
             {...fadeUp(0)}
@@ -338,7 +523,13 @@ const Skills = () => {
                 <motion.div
                   key={tool.name}
                   {...fadeUp(0)}
-                  whileHover={shouldReduceMotion ? undefined : { y: -3 }}
+                  whileHover={
+                    shouldReduceMotion
+                      ? undefined
+                      : {
+                          y: -3,
+                        }
+                  }
                   className="group flex min-w-0 items-center gap-3 rounded-2xl border border-base-300 bg-base-100/60 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 sm:gap-4 sm:p-5"
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-base-200 text-base-content/60 transition-all duration-300 group-hover:bg-primary/10 group-hover:text-primary sm:h-11 sm:w-11">
@@ -360,7 +551,9 @@ const Skills = () => {
           </div>
         </section>
 
-        {/* Workflow */}
+        {/* =========================================================
+            WORKFLOW
+        ========================================================== */}
         <section className="mt-20 sm:mt-24 lg:mt-28">
           <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-16">
             <motion.div
@@ -433,7 +626,9 @@ const Skills = () => {
           </div>
         </section>
 
-        {/* CTA */}
+        {/* =========================================================
+            CTA
+        ========================================================== */}
         <motion.section
           {...fadeUp(0.2)}
           className="relative mt-20 overflow-hidden rounded-[1.5rem] border border-base-300 bg-base-200/30 p-6 text-center backdrop-blur-sm sm:mt-24 sm:rounded-[2rem] sm:p-10 lg:mt-28 lg:p-14"
