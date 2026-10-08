@@ -11,6 +11,7 @@ import Services from "../Services/Services";
 import Contact from "../Contact/Contact";
 import SkillsDetails from "../Skills/SkillsDetails";
 import ServiceDetails from "../Services/ServiceDetails";
+import Login from "../Auth/AdminLogin";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
         path: "contact",
         element: <Contact></Contact>,
       },
+      {
+        path:"login",
+        element:<Login></Login>
+      }
     ],
   },
 ]);

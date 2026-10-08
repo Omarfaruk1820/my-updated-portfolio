@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 import "./index.css";
 import router from "./Components/routes/router";
+import AuthProvider from "./Components/Auth/AuthProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,17 +19,19 @@ const queryClient = new QueryClient({
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+    <AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
 
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        gutter={12}
-        toastOptions={{
-          duration: 4000,
-        }}
-      />
-    </QueryClientProvider>
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          gutter={12}
+          toastOptions={{
+            duration: 4000,
+          }}
+        />
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>,
 );

@@ -315,7 +315,14 @@ const Footer = () => {
               aria-hidden="true"
             />
           </button>
+           <Link
+          to="/login"
+          className="text-xs text-base-content/50 transition-colors hover:text-base-content"
+        >
+          Admin Login
+        </Link>
         </div>
+       
       </div>
     </footer>
   );
