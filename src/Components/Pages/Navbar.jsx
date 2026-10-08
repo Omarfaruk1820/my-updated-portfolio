@@ -1,26 +1,15 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Link, NavLink } from "react-router-dom";
-import {
-  FiArrowUpRight,
-  FiCode,
-  FiMenu,
-  FiMoon,
-  FiSun,
-  FiX,
-} from "react-icons/fi";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { FiArrowUpRight, FiMenu, FiMoon, FiSun, FiX } from "react-icons/fi";
+
+import omarFarukLogo from "../../../src/assets/omar-faruk.png";
 
 const NAV_ITEMS = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Skills", to: "/skills" },
-
-  {
-    label: "Projects",
-    to: "/projects",
-  },
-
-  // { label: "Projects", to: "/projects" },
+  { label: "Projects", to: "/projects" },
   { label: "Services", to: "/services" },
   { label: "Resume", to: "/resume" },
   { label: "Contact", to: "/contact" },
@@ -46,6 +35,7 @@ const getInitialTheme = () => {
 
 const Navbar = () => {
   const shouldReduceMotion = useReducedMotion();
+  const location = useLocation();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,17 +43,17 @@ const Navbar = () => {
 
   const isDark = theme === "dark";
 
-  /* --------------------------------
-     Apply theme
-  --------------------------------- */
+  // --------------------------------
+  // Apply theme
+  // --------------------------------
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
-  /* --------------------------------
-     Scroll state
-  --------------------------------- */
+  // --------------------------------
+  // Scroll state
+  // --------------------------------
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -80,9 +70,16 @@ const Navbar = () => {
     };
   }, []);
 
-  /* --------------------------------
-     Close mobile menu on resize
-  --------------------------------- */
+  // --------------------------------
+  // Close mobile menu on route change
+  // --------------------------------
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  // --------------------------------
+  // Close mobile menu on desktop resize
+  // --------------------------------
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
@@ -97,9 +94,9 @@ const Navbar = () => {
     };
   }, []);
 
-  /* --------------------------------
-     Keyboard accessibility
-  --------------------------------- */
+  // --------------------------------
+  // Escape key accessibility
+  // --------------------------------
   useEffect(() => {
     if (!isMenuOpen) {
       return undefined;
@@ -118,9 +115,9 @@ const Navbar = () => {
     };
   }, [isMenuOpen]);
 
-  /* --------------------------------
-     Prevent background scroll
-  --------------------------------- */
+  // --------------------------------
+  // Prevent background scroll
+  // --------------------------------
   useEffect(() => {
     if (!isMenuOpen) {
       return undefined;
@@ -135,38 +132,43 @@ const Navbar = () => {
     };
   }, [isMenuOpen]);
 
-  /* --------------------------------
-     Theme toggle
-  --------------------------------- */
+  // --------------------------------
+  // Theme toggle
+  // --------------------------------
   const toggleTheme = () => {
     setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
   };
 
-  /* --------------------------------
-     Close mobile menu
-  --------------------------------- */
-  const closeMenu = () => {
-    setIsMenuOpen(false);
-  };
-
-  /* --------------------------------
-     Toggle mobile menu
-  --------------------------------- */
+  // --------------------------------
+  // Mobile menu
+  // --------------------------------
   const toggleMenu = () => {
     setIsMenuOpen((previous) => !previous);
   };
 
-  /* --------------------------------
-     Animation settings
-  --------------------------------- */
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  // --------------------------------
+  // Navbar animation
+  // --------------------------------
   const navAnimation = shouldReduceMotion
     ? {
         initial: false,
-        animate: { opacity: 1 },
+        animate: {
+          opacity: 1,
+        },
       }
     : {
-        initial: { opacity: 0, y: -12 },
-        animate: { opacity: 1, y: 0 },
+        initial: {
+          opacity: 0,
+          y: -12,
+        },
+        animate: {
+          opacity: 1,
+          y: 0,
+        },
         transition: {
           duration: 0.45,
           ease: "easeOut",
@@ -188,18 +190,18 @@ const Navbar = () => {
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.nav
             {...navAnimation}
-            className={`flex items-center justify-between transition-[height] duration-300 ${
+            className={`flex items-center justify-between gap-4 transition-[height] duration-300 ${
               isScrolled ? "h-16 sm:h-[68px]" : "h-[72px] sm:h-20"
             }`}
             aria-label="Main navigation"
           >
             {/* =================================
-                Logo
+                Logo / Brand
             ================================== */}
             <Link
               to="/"
               onClick={closeMenu}
-              className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
+              className="group flex min-w-0 shrink-0 items-center gap-2.5"
               aria-label="Omar Faruk - Home"
             >
               <motion.div
@@ -207,30 +209,37 @@ const Navbar = () => {
                   shouldReduceMotion
                     ? undefined
                     : {
-                        rotate: -5,
-                        scale: 1.05,
+                        scale: 1.04,
                       }
                 }
                 whileTap={
                   shouldReduceMotion
                     ? undefined
                     : {
-                        scale: 0.95,
+                        scale: 0.96,
                       }
                 }
-                className="relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-primary text-primary-content shadow-lg shadow-primary/20 sm:h-10 sm:w-10"
+                className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-base-300/70 bg-base-200 shadow-sm sm:h-10 sm:w-10"
               >
-                <FiCode className="text-lg sm:text-xl" />
+                <img
+                  src={omarFarukLogo}
+                  alt="Omar Faruk"
+                  width="40"
+                  height="40"
+                  loading="eager"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
 
                 <span
-                  className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-500 group-hover:translate-x-full"
+                  className="pointer-events-none absolute inset-0 -translate-x-full bg-white/10 transition-transform duration-500 group-hover:translate-x-full"
                   aria-hidden="true"
                 />
               </motion.div>
 
               <div className="hidden min-w-0 xs:block sm:block">
                 <p className="truncate text-sm font-bold leading-none tracking-tight text-base-content sm:text-base">
-                  Omar<span className="text-primary">.</span>
+                  Omar Faruk <span className="text-primary">.</span>
                 </p>
 
                 <p className="mt-1 hidden truncate font-mono text-[9px] uppercase tracking-[0.16em] text-base-content/50 min-[400px]:block sm:text-[10px] sm:tracking-[0.18em]">
@@ -242,15 +251,15 @@ const Navbar = () => {
             {/* =================================
                 Desktop Navigation
             ================================== */}
-            <div className="hidden items-center lg:flex">
-              <div className="flex items-center gap-0.5 rounded-full border border-base-300/60 bg-base-100/50 p-1.5 backdrop-blur-md xl:gap-1">
+            <div className="hidden min-w-0 flex-1 justify-center lg:flex">
+              <div className="flex max-w-full items-center gap-0.5 overflow-x-auto rounded-full border border-base-300/60 bg-base-100/50 p-1.5 backdrop-blur-md xl:gap-1">
                 {NAV_ITEMS.map((item) => (
                   <NavLink
                     key={item.to}
                     to={item.to}
                     end={item.to === "/"}
                     className={({ isActive }) =>
-                      `relative rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 xl:px-3.5 2xl:px-4 ${
+                      `relative shrink-0 rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 xl:px-3.5 2xl:px-4 ${
                         isActive
                           ? "text-primary"
                           : "text-base-content/70 hover:text-base-content"
@@ -265,7 +274,9 @@ const Navbar = () => {
                             className="absolute inset-0 rounded-full bg-primary/10"
                             transition={
                               shouldReduceMotion
-                                ? { duration: 0 }
+                                ? {
+                                    duration: 0,
+                                  }
                                 : {
                                     type: "spring",
                                     stiffness: 380,
@@ -289,7 +300,7 @@ const Navbar = () => {
             {/* =================================
                 Desktop Actions
             ================================== */}
-            <div className="hidden items-center gap-2.5 lg:flex xl:gap-3">
+            <div className="hidden shrink-0 items-center gap-2.5 lg:flex xl:gap-3">
               {/* Theme Toggle */}
               <motion.button
                 type="button"
@@ -318,7 +329,7 @@ const Navbar = () => {
               >
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.span
-                    key={isDark ? "moon" : "sun"}
+                    key={isDark ? "desktop-moon" : "desktop-sun"}
                     initial={
                       shouldReduceMotion
                         ? false
@@ -355,7 +366,7 @@ const Navbar = () => {
                 </AnimatePresence>
               </motion.button>
 
-              {/* Hire Me */}
+              {/* Start a Project */}
               <motion.div
                 whileHover={
                   shouldReduceMotion
@@ -374,9 +385,9 @@ const Navbar = () => {
               >
                 <Link
                   to="/contact"
-                  className="group btn btn-primary min-h-10 h-10 rounded-full border-none px-4 font-semibold shadow-lg shadow-primary/20 sm:px-5"
+                  className="group btn btn-primary h-10 min-h-10 rounded-full border-none px-4 font-semibold shadow-lg shadow-primary/20 sm:px-5"
                 >
-                  <span>Hire Me</span>
+                  <span className="whitespace-nowrap">Start a Project</span>
 
                   <FiArrowUpRight className="text-lg transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
@@ -386,7 +397,7 @@ const Navbar = () => {
             {/* =================================
                 Mobile Actions
             ================================== */}
-            <div className="flex items-center gap-2 lg:hidden">
+            <div className="flex shrink-0 items-center gap-2 lg:hidden">
               {/* Mobile Theme Toggle */}
               <motion.button
                 type="button"
@@ -567,7 +578,9 @@ const Navbar = () => {
               }
               transition={
                 shouldReduceMotion
-                  ? { duration: 0 }
+                  ? {
+                      duration: 0,
+                    }
                   : {
                       type: "spring",
                       stiffness: 300,
@@ -634,9 +647,9 @@ const Navbar = () => {
                   <Link
                     to="/contact"
                     onClick={closeMenu}
-                    className="btn btn-primary min-h-12 h-12 w-full rounded-xl border-none font-semibold shadow-lg shadow-primary/20"
+                    className="btn btn-primary h-12 min-h-12 w-full rounded-xl border-none font-semibold shadow-lg shadow-primary/20"
                   >
-                    <span>Let's Work Together</span>
+                    <span>Start a Project</span>
 
                     <FiArrowUpRight className="text-lg" />
                   </Link>

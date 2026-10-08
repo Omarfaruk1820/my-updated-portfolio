@@ -10,6 +10,7 @@ import ProjectDetails from "../Projects/ProjectDetails";
 import Services from "../Services/Services";
 import Contact from "../Contact/Contact";
 import SkillsDetails from "../Skills/SkillsDetails";
+import ServiceDetails from "../Services/ServiceDetails";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: "Services",
         element: <Services></Services>,
+      },
+      {
+        path: "services/:id",
+        element: <ServiceDetails />,
       },
       {
         path: "contact",

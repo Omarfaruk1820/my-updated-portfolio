@@ -1,8 +1,37 @@
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   FiArrowUpRight,
   FiCheck,
-  FiCloud,
+  FiChevronRight,
+  FiCode,
+  FiDatabase,
+  FiEye,
+  FiGitBranch,
+  FiLayers,
+  FiLayout,
+  FiLock,
+  FiMonitor,
+  FiRefreshCw,
+  FiServer,
+  FiSettings,
+  FiSmartphone,
+  FiZap,
+} from "react-icons/fi";
+import { Link } from "react-router-dom";
+
+/* =========================================================
+   API CONFIGURATION
+========================================================= */
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+/* =========================================================
+   ICON MAP
+========================================================= */
+
+const ICON_MAP = {
   FiCode,
   FiDatabase,
   FiGitBranch,
@@ -14,102 +43,11 @@ import {
   FiSettings,
   FiSmartphone,
   FiZap,
-} from "react-icons/fi";
-import { Link } from "react-router-dom";
+};
 
-const SERVICES = [
-  {
-    number: "01",
-    icon: FiLayout,
-    title: "Frontend Development",
-    description:
-      "Modern, responsive, and accessible interfaces built with React and a clean component-based architecture.",
-    features: [
-      "React.js application development",
-      "Responsive UI for all devices",
-      "Reusable component architecture",
-      "Tailwind CSS & DaisyUI",
-      "Framer Motion interactions",
-    ],
-    technologies: ["React.js", "Tailwind CSS", "DaisyUI", "Framer Motion"],
-    featured: true,
-  },
-  {
-    number: "02",
-    icon: FiServer,
-    title: "Backend Development",
-    description:
-      "Reliable server-side applications and REST APIs designed with maintainability, security, and scalability in mind.",
-    features: [
-      "Node.js & Express.js APIs",
-      "RESTful API architecture",
-      "MVC application structure",
-      "Middleware & error handling",
-      "Secure server configuration",
-    ],
-    technologies: ["Node.js", "Express.js", "REST API", "MVC"],
-  },
-  {
-    number: "03",
-    icon: FiDatabase,
-    title: "Database Solutions",
-    description:
-      "Structured and efficient MongoDB solutions for applications that need reliable data storage and scalable architecture.",
-    features: [
-      "MongoDB database design",
-      "CRUD operations",
-      "Data modeling",
-      "Query optimization",
-      "Collection & index planning",
-    ],
-    technologies: ["MongoDB", "Database Design", "CRUD"],
-  },
-  {
-    number: "04",
-    icon: FiLock,
-    title: "Authentication & Security",
-    description:
-      "Secure authentication flows that protect user accounts, application routes, and sensitive application data.",
-    features: [
-      "Firebase Authentication",
-      "JWT authentication",
-      "Protected routes",
-      "Role-based access",
-      "Secure API communication",
-    ],
-    technologies: ["Firebase Auth", "JWT", "CORS"],
-  },
-  {
-    number: "05",
-    icon: FiGitBranch,
-    title: "API & Application Integration",
-    description:
-      "Connecting frontend applications with backend services and external systems through clean and predictable data flows.",
-    features: [
-      "Axios API integration",
-      "TanStack Query data fetching",
-      "Loading & error states",
-      "API state management",
-      "Third-party service integration",
-    ],
-    technologies: ["Axios", "TanStack Query", "REST API"],
-  },
-  {
-    number: "06",
-    icon: FiSmartphone,
-    title: "Responsive Web Applications",
-    description:
-      "Web applications that provide a consistent and polished experience across phones, tablets, laptops, and large screens.",
-    features: [
-      "Mobile-first development",
-      "Cross-device layouts",
-      "Responsive navigation",
-      "Touch-friendly interfaces",
-      "Performance-focused UI",
-    ],
-    technologies: ["Responsive UI", "Tailwind CSS", "DaisyUI"],
-  },
-];
+/* =========================================================
+   TECHNOLOGY STACK
+========================================================= */
 
 const TECH_STACK = [
   {
@@ -126,6 +64,7 @@ const TECH_STACK = [
       "React Icons",
     ],
   },
+
   {
     category: "Backend",
     icon: FiServer,
@@ -139,6 +78,7 @@ const TECH_STACK = [
       "dotenv",
     ],
   },
+
   {
     category: "Database",
     icon: FiDatabase,
@@ -150,6 +90,7 @@ const TECH_STACK = [
       "Database Integration",
     ],
   },
+
   {
     category: "Tools & Workflow",
     icon: FiSettings,
@@ -165,6 +106,10 @@ const TECH_STACK = [
   },
 ];
 
+/* =========================================================
+   DEVELOPMENT PROCESS
+========================================================= */
+
 const PROCESS = [
   {
     number: "01",
@@ -172,18 +117,21 @@ const PROCESS = [
     description:
       "I first understand the product requirements, users, business goals, and technical constraints.",
   },
+
   {
     number: "02",
     title: "Plan",
     description:
       "I define the application structure, data flow, components, API requirements, and development roadmap.",
   },
+
   {
     number: "03",
     title: "Build",
     description:
       "I develop the frontend, backend, database, authentication, and integrations using maintainable architecture.",
   },
+
   {
     number: "04",
     title: "Refine",
@@ -192,8 +140,121 @@ const PROCESS = [
   },
 ];
 
+/* =========================================================
+   FETCH SERVICES
+========================================================= */
+
+const fetchServices = async () => {
+  const response = await axios.get(`${API_URL}/api/services`);
+
+  if (!response.data?.success) {
+    throw new Error(response.data?.message || "Failed to fetch services.");
+  }
+
+  return Array.isArray(response.data?.data) ? response.data.data : [];
+};
+
+/* =========================================================
+   SERVICE SKELETON
+========================================================= */
+
+const ServiceCardSkeleton = () => {
+  return (
+    <article className="animate-pulse rounded-3xl border border-base-300 bg-base-200/30 p-6 sm:p-7">
+      <div className="flex items-start justify-between">
+        <div className="h-12 w-12 rounded-2xl bg-base-300" />
+
+        <div className="h-4 w-8 rounded bg-base-300" />
+      </div>
+
+      <div className="mt-6 h-6 w-2/3 rounded bg-base-300" />
+
+      <div className="mt-3 space-y-2">
+        <div className="h-4 w-full rounded bg-base-300" />
+        <div className="h-4 w-5/6 rounded bg-base-300" />
+        <div className="h-4 w-4/6 rounded bg-base-300" />
+      </div>
+
+      <div className="mt-6 space-y-3">
+        <div className="h-4 w-5/6 rounded bg-base-300" />
+        <div className="h-4 w-4/5 rounded bg-base-300" />
+        <div className="h-4 w-3/5 rounded bg-base-300" />
+      </div>
+
+      <div className="mt-7 flex gap-2 border-t border-base-300 pt-5">
+        <div className="h-7 w-20 rounded-lg bg-base-300" />
+        <div className="h-7 w-24 rounded-lg bg-base-300" />
+        <div className="h-7 w-16 rounded-lg bg-base-300" />
+      </div>
+
+      <div className="mt-6 h-10 w-full rounded-xl bg-base-300" />
+    </article>
+  );
+};
+
+/* =========================================================
+   ERROR STATE
+========================================================= */
+
+const ServicesError = ({ onRetry }) => {
+  return (
+    <div className="rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center sm:p-10">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-error/20 bg-error/10 text-error">
+        <FiCode className="text-xl" />
+      </div>
+
+      <h3 className="mt-6 text-2xl font-black tracking-tight">
+        Unable to load services
+      </h3>
+
+      <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-base-content/55">
+        Something went wrong while loading the services. Please try again.
+      </p>
+
+      <button
+        type="button"
+        onClick={onRetry}
+        className="btn btn-primary mt-6 h-11 min-h-11 rounded-xl border-none px-5 font-semibold"
+      >
+        <FiRefreshCw />
+        Try Again
+      </button>
+    </div>
+  );
+};
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+const ServicesEmpty = () => {
+  return (
+    <div className="rounded-3xl border border-base-300 bg-base-200/40 p-8 text-center sm:p-10">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10 text-primary">
+        <FiLayers className="text-xl" />
+      </div>
+
+      <h3 className="mt-6 text-2xl font-black tracking-tight">
+        Services coming soon
+      </h3>
+
+      <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-base-content/55">
+        My professional services are being prepared. Please check back soon.
+      </p>
+    </div>
+  );
+};
+
+/* =========================================================
+   SERVICES COMPONENT
+========================================================= */
+
 const Services = () => {
   const shouldReduceMotion = useReducedMotion();
+
+  /* =======================================================
+     ANIMATION VARIANTS
+  ======================================================== */
 
   const sectionReveal = {
     hidden: shouldReduceMotion
@@ -202,9 +263,11 @@ const Services = () => {
           opacity: 0,
           y: 30,
         },
+
     visible: {
       opacity: 1,
       y: 0,
+
       transition: shouldReduceMotion
         ? {
             duration: 0,
@@ -223,9 +286,11 @@ const Services = () => {
           opacity: 0,
           y: 30,
         },
+
     visible: {
       opacity: 1,
       y: 0,
+
       transition: shouldReduceMotion
         ? {
             duration: 0,
@@ -237,11 +302,33 @@ const Services = () => {
     },
   };
 
+  /* =======================================================
+     SERVICES QUERY
+  ======================================================== */
+
+  const {
+    data: services = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["services"],
+    queryFn: fetchServices,
+
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+
+    retry: 2,
+
+    refetchOnWindowFocus: false,
+  });
+
   return (
     <main className="relative overflow-hidden bg-base-100 text-base-content">
-      {/* =========================================================
-          Background
-      ========================================================== */}
+      {/* =====================================================
+          BACKGROUND
+      ====================================================== */}
+
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden="true"
@@ -262,9 +349,10 @@ const Services = () => {
         />
       </div>
 
-      {/* =========================================================
-          Hero / Intro
-      ========================================================== */}
+      {/* =====================================================
+          HERO / INTRO
+      ====================================================== */}
+
       <section
         className="relative border-b border-base-300 py-20 sm:py-24 lg:py-32"
         aria-labelledby="services-title"
@@ -281,6 +369,7 @@ const Services = () => {
             className="mx-auto max-w-4xl text-center"
           >
             {/* Eyebrow */}
+
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-200/60 px-4 py-2 backdrop-blur-md">
               <FiCode className="text-primary" />
 
@@ -290,6 +379,7 @@ const Services = () => {
             </div>
 
             {/* Heading */}
+
             <h1
               id="services-title"
               className="text-balance text-4xl font-black tracking-[-0.045em] sm:text-5xl md:text-6xl lg:text-7xl"
@@ -303,6 +393,7 @@ const Services = () => {
             </h1>
 
             {/* Description */}
+
             <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-base-content/60 sm:text-base sm:leading-8 lg:text-lg">
               I build modern full-stack web applications with thoughtful
               interfaces, reliable APIs, secure authentication, structured
@@ -310,9 +401,11 @@ const Services = () => {
             </p>
 
             {/* Quick Stats */}
+
             <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 overflow-hidden rounded-2xl border border-base-300 bg-base-200/40 sm:grid-cols-4">
               <div className="border-b border-base-300 p-4 sm:border-b-0 sm:border-r">
                 <FiMonitor className="mx-auto text-lg text-primary" />
+
                 <p className="mt-2 text-xs font-semibold text-base-content/60">
                   Frontend
                 </p>
@@ -320,6 +413,7 @@ const Services = () => {
 
               <div className="border-b border-base-300 p-4 sm:border-b-0 sm:border-r">
                 <FiServer className="mx-auto text-lg text-secondary" />
+
                 <p className="mt-2 text-xs font-semibold text-base-content/60">
                   Backend
                 </p>
@@ -327,6 +421,7 @@ const Services = () => {
 
               <div className="border-b border-base-300 p-4 sm:border-b-0 sm:border-r">
                 <FiDatabase className="mx-auto text-lg text-accent" />
+
                 <p className="mt-2 text-xs font-semibold text-base-content/60">
                   Database
                 </p>
@@ -334,6 +429,7 @@ const Services = () => {
 
               <div className="p-4">
                 <FiZap className="mx-auto text-lg text-primary" />
+
                 <p className="mt-2 text-xs font-semibold text-base-content/60">
                   Integration
                 </p>
@@ -343,14 +439,17 @@ const Services = () => {
         </div>
       </section>
 
-      {/* =========================================================
-          Services
-      ========================================================== */}
+      {/* =====================================================
+          SERVICES
+      ====================================================== */}
+
       <section
         className="relative py-20 sm:py-24 lg:py-32"
         aria-labelledby="services-grid-title"
       >
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+
           <motion.div
             variants={sectionReveal}
             initial="hidden"
@@ -380,97 +479,147 @@ const Services = () => {
             </p>
           </motion.div>
 
+          {/* Loading */}
+
+          {isLoading && (
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <ServiceCardSkeleton key={index} />
+              ))}
+            </div>
+          )}
+
+          {/* Error */}
+
+          {isError && !isLoading && <ServicesError onRetry={refetch} />}
+
+          {/* Empty */}
+
+          {!isLoading && !isError && services.length === 0 && <ServicesEmpty />}
+
           {/* Service Cards */}
-          <motion.div
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: shouldReduceMotion ? 0 : 0.08,
+
+          {!isLoading && !isError && services.length > 0 && (
+            <motion.div
+              variants={{
+                hidden: {},
+
+                visible: {
+                  transition: {
+                    staggerChildren: shouldReduceMotion ? 0 : 0.08,
+                  },
                 },
-              },
-            }}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{
-              once: true,
-              amount: 0.05,
-            }}
-            className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
-          >
-            {SERVICES.map((service) => {
-              const Icon = service.icon;
+              }}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.05,
+              }}
+              className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+            >
+              {services.map((service, index) => {
+                const ServiceIcon = ICON_MAP[service.icon] || FiCode;
 
-              return (
-                <motion.article
-                  key={service.number}
-                  variants={cardReveal}
-                  className={`group relative overflow-hidden rounded-3xl border bg-base-200/30 p-6 transition-all duration-300 hover:-translate-y-1 sm:p-7 ${
-                    service.featured
-                      ? "border-primary/25 shadow-lg shadow-primary/5"
-                      : "border-base-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5"
-                  }`}
-                >
-                  {/* Top accent */}
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                const features = Array.isArray(service.features)
+                  ? service.features
+                  : [];
 
-                  {/* Number */}
-                  <div className="flex items-start justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-base-300 bg-base-100 text-primary transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/10">
-                      <Icon className="text-xl" />
+                const technologies = Array.isArray(service.technologies)
+                  ? service.technologies
+                  : [];
+
+                return (
+                  <motion.article
+                    key={service._id}
+                    variants={cardReveal}
+                    className={`group relative overflow-hidden rounded-3xl border bg-base-200/30 p-6 transition-all duration-300 hover:-translate-y-1 sm:p-7 ${
+                      service.featured
+                        ? "border-primary/25 shadow-lg shadow-primary/5"
+                        : "border-base-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5"
+                    }`}
+                  >
+                    {/* Top accent */}
+
+                    <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                    {/* Header */}
+
+                    <div className="flex items-start justify-between">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-base-300 bg-base-100 text-primary transition-all duration-300 group-hover:border-primary/30 group-hover:bg-primary/10">
+                        <ServiceIcon className="text-xl" />
+                      </div>
+
+                      <span className="font-mono text-xs font-medium text-base-content/25">
+                        {String(service.order ?? index + 1).padStart(2, "0")}
+                      </span>
                     </div>
 
-                    <span className="font-mono text-xs font-medium text-base-content/25">
-                      {service.number}
-                    </span>
-                  </div>
+                    {/* Content */}
 
-                  {/* Content */}
-                  <h3 className="mt-6 text-xl font-bold tracking-tight text-base-content">
-                    {service.title}
-                  </h3>
+                    <h3 className="mt-6 text-xl font-bold tracking-tight text-base-content">
+                      {service.title}
+                    </h3>
 
-                  <p className="mt-3 text-sm leading-6 text-base-content/55">
-                    {service.description}
-                  </p>
+                    <p className="mt-3 text-sm leading-6 text-base-content/55">
+                      {service.shortDescription}
+                    </p>
 
-                  {/* Features */}
-                  <ul className="mt-6 space-y-3">
-                    {service.features.map((feature) => (
-                      <li
-                        key={feature}
-                        className="flex items-start gap-2.5 text-sm text-base-content/65"
-                      >
-                        <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                          <FiCheck className="text-[10px]" />
-                        </span>
+                    {/* Features */}
 
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    {features.length > 0 && (
+                      <ul className="mt-6 space-y-3">
+                        {features.slice(0, 5).map((feature) => (
+                          <li
+                            key={feature}
+                            className="flex items-start gap-2.5 text-sm text-base-content/65"
+                          >
+                            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                              <FiCheck className="text-[10px]" />
+                            </span>
 
-                  {/* Technologies */}
-                  <div className="mt-7 flex flex-wrap gap-2 border-t border-base-300 pt-5">
-                    {service.technologies.map((technology) => (
-                      <span
-                        key={technology}
-                        className="rounded-lg border border-base-300 bg-base-100 px-2.5 py-1.5 font-mono text-[10px] text-base-content/50"
-                      >
-                        {technology}
-                      </span>
-                    ))}
-                  </div>
-                </motion.article>
-              );
-            })}
-          </motion.div>
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {/* Technologies */}
+
+                    {technologies.length > 0 && (
+                      <div className="mt-7 flex flex-wrap gap-2 border-t border-base-300 pt-5">
+                        {technologies.map((technology) => (
+                          <span
+                            key={technology}
+                            className="rounded-lg border border-base-300 bg-base-100 px-2.5 py-1.5 font-mono text-[10px] text-base-content/50"
+                          >
+                            {technology}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Details Link */}
+
+                    <Link
+                      to={`/services/${service._id}`}
+                      className="group/link mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-base-300 bg-base-100 px-4 text-sm font-semibold text-base-content transition-all duration-200 hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                    >
+                      View Service Details
+                      <FiEye className="transition-transform duration-200 group-hover/link:translate-x-0.5" />
+                    </Link>
+                  </motion.article>
+                );
+              })}
+            </motion.div>
+          )}
         </div>
       </section>
 
-      {/* =========================================================
-          Technology Stack
-      ========================================================== */}
+      {/* =====================================================
+          TECHNOLOGY STACK
+      ====================================================== */}
+
       <section
         className="relative border-y border-base-300 bg-base-200/20 py-20 sm:py-24 lg:py-32"
         aria-labelledby="technology-title"
@@ -506,6 +655,7 @@ const Services = () => {
           <motion.div
             variants={{
               hidden: {},
+
               visible: {
                 transition: {
                   staggerChildren: shouldReduceMotion ? 0 : 0.08,
@@ -562,9 +712,10 @@ const Services = () => {
         </div>
       </section>
 
-      {/* =========================================================
-          Development Process
-      ========================================================== */}
+      {/* =====================================================
+          DEVELOPMENT PROCESS
+      ====================================================== */}
+
       <section
         className="relative py-20 sm:py-24 lg:py-32"
         aria-labelledby="process-title"
@@ -572,6 +723,7 @@ const Services = () => {
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
             {/* Intro */}
+
             <motion.div
               variants={sectionReveal}
               initial="hidden"
@@ -612,9 +764,11 @@ const Services = () => {
             </motion.div>
 
             {/* Process */}
+
             <motion.div
               variants={{
                 hidden: {},
+
                 visible: {
                   transition: {
                     staggerChildren: shouldReduceMotion ? 0 : 0.1,
@@ -630,6 +784,7 @@ const Services = () => {
               className="relative"
             >
               {/* Timeline */}
+
               <div className="absolute bottom-6 left-5 top-6 w-px bg-base-300 sm:left-6" />
 
               <div className="space-y-5">
@@ -640,6 +795,7 @@ const Services = () => {
                     className="relative rounded-3xl border border-base-300 bg-base-200/30 p-5 pl-14 sm:p-7 sm:pl-16"
                   >
                     {/* Timeline point */}
+
                     <div className="absolute left-[11px] top-7 flex h-3 w-3 items-center justify-center rounded-full bg-primary ring-4 ring-base-100 sm:left-[18px]" />
 
                     <div className="flex items-start justify-between gap-4">
@@ -669,9 +825,10 @@ const Services = () => {
         </div>
       </section>
 
-      {/* =========================================================
+      {/* =====================================================
           CTA
-      ========================================================== */}
+      ====================================================== */}
+
       <section className="relative pb-20 sm:pb-24 lg:pb-32">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -698,6 +855,7 @@ const Services = () => {
             className="relative overflow-hidden rounded-[2rem] border border-base-300 bg-base-200/40 px-6 py-12 text-center sm:px-10 sm:py-16 lg:px-16 lg:py-20"
           >
             {/* CTA glow */}
+
             <div
               className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl"
               aria-hidden="true"
